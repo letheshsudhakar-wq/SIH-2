@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <defs>
+    <linearGradient id="zunoFaviconGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop stopColor="#8B5CF6" />
+      <stop offset="1" stopColor="#6366F1" />
+    </linearGradient>
+  </defs>
+  <rect width="40" height="40" rx="10" fill="url(#zunoFaviconGrad)" />
+  <path d="M11 13H28.5C29.3 13 29.8 13.9 29.3 14.5L16.2 26H29C29.6 26 30 26.4 30 27V27.5C30 28.1 29.6 28.5 29 28.5H11.5C10.7 28.5 10.2 27.6 10.7 27L23.8 15.5H11C10.4 15.5 10 15.1 10 14.5V14C10 13.4 10.4 13 11 13Z" fill="#FFFFFF" />
+  <circle cx="28.5" cy="11.5" r="2.5" fill="#38BDF8" />
+</svg>
