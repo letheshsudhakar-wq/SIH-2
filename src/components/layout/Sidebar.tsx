@@ -6,7 +6,7 @@ import React from 'react';
 import { useApp, AppRoute } from '../../context/AppContext';
 import { ZunoLogo } from '../common/ZunoLogo';
 import { 
-  LayoutDashboard, 
+  Home,
   TrendingUp, 
   Sparkles, 
   Stethoscope, 
@@ -17,11 +17,8 @@ import {
   GraduationCap, 
   Landmark, 
   FileSpreadsheet, 
-  FileText, 
-  Settings, 
-  ChevronLeft, 
   ChevronRight,
-  ShieldCheck
+  SlidersHorizontal
 } from 'lucide-react';
 
 interface NavItem {
@@ -29,16 +26,17 @@ interface NavItem {
   label: string;
   icon: React.ElementType;
   badge?: string;
+  badgeType?: 'ai' | 'new' | 'neutral';
   section?: string;
 }
 
 const navItems: NavItem[] = [
-  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { id: 'overview', label: 'Overview', icon: Home },
   { id: 'labour-market', label: 'Labour Market', icon: TrendingUp },
   { id: 'skills', label: 'Skill Intelligence', icon: Sparkles },
   
-  { section: 'CURRICULUM & AI', id: 'curriculum', label: 'Curriculum Doctor', icon: Stethoscope, badge: 'AI' },
-  { id: 'crisis', label: 'Skill Crisis Radar', icon: AlertOctagon, badge: 'India' },
+  { section: 'CURRICULUM & AI', id: 'curriculum', label: 'Curriculum Doctor', icon: Stethoscope, badge: 'AI', badgeType: 'ai' },
+  { id: 'crisis', label: 'Skill Crisis Radar', icon: AlertOctagon, badge: 'New', badgeType: 'new' },
   { id: 'dna', label: 'Skill DNA', icon: Dna },
   { id: 'future-jobs', label: 'Future Jobs Map', icon: Map },
   
@@ -46,9 +44,6 @@ const navItems: NavItem[] = [
   { id: 'student', label: 'Student Skill Gap', icon: GraduationCap },
   { id: 'government', label: 'Government Dash', icon: Landmark },
   { id: 'district-plan', label: 'District Training Plan', icon: FileSpreadsheet },
-  
-  { section: 'SYSTEM', id: 'reports', label: 'Reports', icon: FileText },
-  { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
 export const Sidebar: React.FC = () => {
@@ -62,8 +57,8 @@ export const Sidebar: React.FC = () => {
         left: 0,
         bottom: 0,
         width: sidebarCollapsed ? 'var(--sidebar-collapsed-width)' : 'var(--sidebar-width)',
-        backgroundColor: 'var(--bg-surface)',
-        borderRight: '1px solid var(--border-subtle)',
+        backgroundColor: '#ffffff',
+        borderRight: '1px solid #e2e8f0',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 100,
@@ -80,14 +75,14 @@ export const Sidebar: React.FC = () => {
           alignItems: 'center',
           justifyContent: sidebarCollapsed ? 'center' : 'space-between',
           padding: sidebarCollapsed ? '0 var(--space-2)' : '0 var(--space-5)',
-          borderBottom: '1px solid var(--border-subtle)',
+          borderBottom: '1px solid #f1f5f9',
         }}
       >
         <div
           onClick={() => setCurrentRoute('overview')}
           style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
         >
-          <ZunoLogo size="sm" showText={!sidebarCollapsed} />
+          <ZunoLogo size="sm" showText={!sidebarCollapsed} showSubtitle={!sidebarCollapsed} />
         </div>
 
         <button
@@ -97,12 +92,12 @@ export const Sidebar: React.FC = () => {
           style={{
             padding: 4,
             borderRadius: 'var(--radius-sm)',
-            color: 'var(--text-muted)',
+            color: '#94a3b8',
             display: sidebarCollapsed ? 'none' : 'flex',
           }}
           title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          {sidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+          <SlidersHorizontal size={14} />
         </button>
       </div>
 
@@ -112,10 +107,10 @@ export const Sidebar: React.FC = () => {
           flex: 1,
           overflowY: 'auto',
           overflowX: 'hidden',
-          padding: 'var(--space-3) var(--space-2)',
+          padding: 'var(--space-3) var(--space-3)',
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
+          gap: 3,
         }}
       >
         {navItems.map((item, idx) => {
@@ -127,11 +122,11 @@ export const Sidebar: React.FC = () => {
               {item.section && !sidebarCollapsed && (
                 <div
                   style={{
-                    fontSize: '0.685rem',
+                    fontSize: '0.675rem',
                     fontWeight: 700,
                     letterSpacing: '0.06em',
-                    color: 'var(--text-subtle)',
-                    padding: `${idx === 0 ? '4px' : '14px'} 12px 6px 12px`,
+                    color: '#94a3b8',
+                    padding: `${idx === 0 ? '4px' : '16px'} 10px 6px 10px`,
                     textTransform: 'uppercase',
                   }}
                 >
@@ -148,50 +143,37 @@ export const Sidebar: React.FC = () => {
                   alignItems: 'center',
                   gap: 10,
                   width: '100%',
-                  padding: sidebarCollapsed ? '10px 0' : '8px 12px',
+                  padding: sidebarCollapsed ? '10px 0' : '9px 12px',
                   justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
-                  borderRadius: 'var(--radius-md)',
-                  backgroundColor: isActive ? 'var(--zuno-primary-50)' : 'transparent',
-                  color: isActive ? 'var(--zuno-primary-700)' : 'var(--text-secondary)',
-                  fontWeight: isActive ? 600 : 500,
-                  fontSize: '0.875rem',
+                  borderRadius: 'var(--radius-lg)',
+                  backgroundColor: isActive ? '#f3f0ff' : 'transparent',
+                  color: isActive ? '#6d28d9' : '#475569',
+                  fontWeight: isActive ? 700 : 500,
+                  fontSize: '0.85rem',
                   transition: 'all var(--transition-fast)',
                   border: 'none',
                   textAlign: 'left',
                   position: 'relative',
+                  cursor: 'pointer',
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.backgroundColor = 'var(--bg-surface-subtle)';
-                    e.currentTarget.style.color = 'var(--text-primary)';
+                    e.currentTarget.style.backgroundColor = '#f8fafc';
+                    e.currentTarget.style.color = '#0f172a';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
                     e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'var(--text-secondary)';
+                    e.currentTarget.style.color = '#475569';
                   }
                 }}
               >
-                {isActive && (
-                  <span
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      top: '18%',
-                      bottom: '18%',
-                      width: 3,
-                      borderRadius: '0 3px 3px 0',
-                      backgroundColor: 'var(--zuno-primary-600)',
-                    }}
-                  />
-                )}
-
                 <Icon
-                  size={18}
+                  size={17}
                   strokeWidth={isActive ? 2.2 : 1.8}
                   style={{
-                    color: isActive ? 'var(--zuno-primary-600)' : 'var(--text-muted)',
+                    color: isActive ? '#7c3aed' : '#64748b',
                     flexShrink: 0,
                   }}
                 />
@@ -204,8 +186,14 @@ export const Sidebar: React.FC = () => {
 
                 {!sidebarCollapsed && item.badge && (
                   <span
-                    className={`badge ${item.badge === 'AI' ? 'badge-purple' : 'badge-neutral'}`}
-                    style={{ fontSize: '0.675rem', padding: '1px 5px', fontWeight: 700 }}
+                    style={{
+                      fontSize: '0.675rem',
+                      fontWeight: 700,
+                      padding: '2px 7px',
+                      borderRadius: 'var(--radius-full)',
+                      backgroundColor: item.badgeType === 'ai' ? '#ede9fe' : '#e0e7ff',
+                      color: item.badgeType === 'ai' ? '#6d28d9' : '#4338ca',
+                    }}
                   >
                     {item.badge}
                   </span>
@@ -216,14 +204,27 @@ export const Sidebar: React.FC = () => {
         })}
       </div>
 
-      {/* Bottom User Info */}
+      {/* Bottom User Info Card */}
       <div
         style={{
-          padding: sidebarCollapsed ? 'var(--space-3) var(--space-1)' : 'var(--space-3) var(--space-4)',
-          borderTop: '1px solid var(--border-subtle)',
-          backgroundColor: 'var(--bg-surface)',
+          padding: sidebarCollapsed ? 'var(--space-3) var(--space-1)' : 'var(--space-3) var(--space-3)',
+          borderTop: '1px solid #f1f5f9',
+          backgroundColor: '#ffffff',
         }}
       >
+        <div
+          style={{
+            fontSize: '0.675rem',
+            fontWeight: 700,
+            letterSpacing: '0.06em',
+            color: '#94a3b8',
+            padding: '2px 8px 8px 8px',
+            textTransform: 'uppercase',
+            display: sidebarCollapsed ? 'none' : 'block',
+          }}
+        >
+          SYSTEM
+        </div>
         <div
           onClick={() => setCurrentRoute('settings')}
           style={{
@@ -232,18 +233,18 @@ export const Sidebar: React.FC = () => {
             gap: 10,
             cursor: 'pointer',
             padding: '6px 8px',
-            borderRadius: 'var(--radius-md)',
+            borderRadius: 'var(--radius-lg)',
             transition: 'background-color var(--transition-fast)',
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-surface-subtle)')}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f8fafc')}
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
         >
           <div
             style={{
-              width: 34,
-              height: 34,
+              width: 32,
+              height: 32,
               borderRadius: '50%',
-              backgroundColor: 'var(--zuno-primary-600)',
+              backgroundColor: '#7c3aed',
               color: '#ffffff',
               display: 'flex',
               alignItems: 'center',
@@ -253,7 +254,7 @@ export const Sidebar: React.FC = () => {
               flexShrink: 0,
             }}
           >
-            {userProfile.name.charAt(0)}
+            D
           </div>
 
           {!sidebarCollapsed && (
@@ -261,30 +262,29 @@ export const Sidebar: React.FC = () => {
               <div
                 style={{
                   fontSize: '0.825rem',
-                  fontWeight: 600,
-                  color: 'var(--text-primary)',
+                  fontWeight: 700,
+                  color: '#0f172a',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                 }}
               >
-                {userProfile.name}
+                Dr. Rajesh Sharma
               </div>
               <div
                 style={{
                   fontSize: '0.725rem',
-                  color: 'var(--zuno-primary-600)',
+                  color: '#7c3aed',
                   fontWeight: 600,
-                  textTransform: 'capitalize',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
                 }}
               >
-                <ShieldCheck size={11} />
-                {userProfile.role}
+                Government
               </div>
             </div>
+          )}
+
+          {!sidebarCollapsed && (
+            <ChevronRight size={15} style={{ color: '#94a3b8' }} />
           )}
         </div>
       </div>
