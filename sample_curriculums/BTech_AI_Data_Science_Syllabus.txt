@@ -1,0 +1,49 @@
+========================================================================
+COURSE SYLLABUS: B.Tech Artificial Intelligence & Machine Learning
+INSTITUTION: Institute of Advanced Engineering & Technology
+ACADEMIC YEAR: 2024-2025 | Semester: V
+COURSE CODE: AI-501 | Total Credits: 4
+========================================================================
+
+COURSE DESCRIPTION:
+Comprehensive foundational study of artificial intelligence, statistical machine learning algorithms, expert systems, and basic neural network implementations.
+
+MODULE 1: Classical Artificial Intelligence & Expert Systems (8 Hours)
+- History and Foundations of AI (Turing Test, Chinese Room)
+- State-Space Search: BFS, DFS, A* Algorithm, Alpha-Beta Minimax Pruning
+- Prolog Language Fundamentals and Knowledge Base Reasoning
+- Rule-Based Expert Systems (MYCIN, DENDRAL Architecture)
+- Certainty Factors and Forward/Backward Chaining
+
+MODULE 2: Statistical Machine Learning & Feature Engineering (10 Hours)
+- Data Cleaning, Missing Value Imputation, Standard Scaling
+- Linear Regression, Logistic Regression with Gradient Descent
+- Decision Trees (ID3, C4.5), Random Forests, Support Vector Machines (SVM)
+- Clustering: K-Means, Hierarchical Agglomerative Clustering
+- Dimensionality Reduction: PCA (Principal Component Analysis)
+- Evaluation Metrics: Confusion Matrix, ROC-AUC, Precision, Recall
+
+MODULE 3: Neural Networks Foundations (8 Hours)
+- Biological vs. Artificial Neurons, Perceptron Learning Rule
+- Multi-Layer Perceptrons (MLP), Backpropagation Algorithm
+- Activation Functions: Sigmoid, Tanh, ReLU
+- Loss Functions (MSE, Binary Cross Entropy)
+- Weka GUI tool for model training and comparison
+
+MODULE 4: Introduction to Computer Vision & NLP Basics (8 Hours)
+- Convolutional Neural Networks (CNN): Convolution, Max Pooling, Flatten
+- LeNet-5 Architecture Overview
+- Natural Language Processing: Bag of Words, TF-IDF, N-grams
+- Rule-Based Stemming (Porter Stemmer) and Lemmatization
+
+LAB PRACTICUM (30 Hours):
+1. Implementing A* Search in Python for 8-Puzzle Problem.
+2. Building a Decision Tree Classifier using Scikit-Learn.
+3. Handwritten Digit Recognition using LeNet on MNIST dataset.
+4. Sentiment Analysis using Bag of Words and Logistic Regression.
+5. Exploration of Datasets using Weka Data Mining Workbench.
+
+ASSESSMENT METHODOLOGY:
+- Written Theory Examinations: 60%
+- Lab Record & Viva Voce: 40%
+========================================================================

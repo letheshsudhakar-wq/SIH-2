@@ -1,0 +1,57 @@
+========================================================================
+COURSE SYLLABUS: B.Tech Computer Science & Distributed Systems
+INSTITUTION: Apex Technological Institute
+ACADEMIC YEAR: 2024-2025 | Semester: VI
+COURSE CODE: CS-602 | Total Credits: 4
+========================================================================
+
+COURSE DESCRIPTION:
+This course introduces students to distributed computing, web services, database systems, and networking architectures. It covers client-server communication paradigms, legacy RPC protocols, and basics of cloud storage.
+
+MODULE 1: Client-Server Architecture & Communication Protocols (10 Hours)
+- Introduction to Two-Tier and Three-Tier Client-Server Systems
+- Socket Programming in C/Java (TCP/UDP)
+- Remote Procedure Calls (RPC) and Sun RPC Interface
+- XML-RPC and SOAP (Simple Object Access Protocol) Web Services
+- WSDL (Web Services Description Language) and Apache Axis Deployment
+- Monolithic Application Structuring and State Management
+
+MODULE 2: Relational Databases & Legacy Middleware (8 Hours)
+- Relational Database Schemas and Normalization (1NF to 3NF)
+- SQL Query Optimization and Stored Procedures
+- Transaction Processing (ACID Properties)
+- Enterprise JavaBeans (EJB 2.0 / 3.0) and Corba Middleware
+- Centralized Data Storage Systems
+
+MODULE 3: Virtualization & Server Administration (8 Hours)
+- Hypervisors (Type 1 and Type 2) and Virtual Box setup
+- Linux Basic Command-Line Operations and Bash Scripting
+- Manual Apache HTTP Web Server Configuration
+- FTP Server Setup for Remote File Uploads
+- Subversion (SVN) Version Control System Workflows
+
+MODULE 4: Introduction to Cloud Concepts (6 Hours)
+- Public vs. Private Cloud Overview
+- NIST Cloud Definition and Service Models (IaaS, PaaS, SaaS)
+- Basic Amazon EC2 Virtual Machine Launching
+- Static Web Hosting using Shared Hosting CPanels
+
+MODULE 5: Security & Distributed Coordination (8 Hours)
+- Symmetric and Asymmetric Cryptography (DES / RSA Basics)
+- Mutual Exclusion Algorithms in Distributed Systems
+- Centralized Election Algorithms (Bully & Ring Algorithms)
+- Basic Password Authentication with SHA-1
+
+LAB PRACTICUM (30 Hours):
+1. Implementation of Client-Server Socket in Java.
+2. Building a SOAP Web Service for Calculator operations using Eclipse and Axis2.
+3. Writing SVN checkout, commit, and update scripts.
+4. Setting up Apache Web Server and configuring HTTP virtual hosts.
+5. Deploying a monolithic JSP/Servlet web application with MySQL.
+6. Theoretical case study presentation on Cloud Computing.
+
+ASSESSMENT METHODOLOGY:
+- Mid-Term Written Examination: 30%
+- End-Semester Theory Paper: 50%
+- Lab Record & Viva Voce: 20%
+========================================================================
