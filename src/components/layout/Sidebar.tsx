@@ -254,7 +254,7 @@ export const Sidebar: React.FC = () => {
               flexShrink: 0,
             }}
           >
-            D
+            {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : 'A'}
           </div>
 
           {!sidebarCollapsed && (
@@ -269,16 +269,17 @@ export const Sidebar: React.FC = () => {
                   textOverflow: 'ellipsis',
                 }}
               >
-                Dr. Rajesh Sharma
+                {userProfile.name || 'Admin'}
               </div>
               <div
                 style={{
                   fontSize: '0.725rem',
                   color: '#7c3aed',
                   fontWeight: 600,
+                  textTransform: 'capitalize',
                 }}
               >
-                Government
+                {userProfile.role || 'Admin'}
               </div>
             </div>
           )}

@@ -49,11 +49,11 @@ interface AppContextType {
 
 const defaultProfile: UserProfile = {
   id: 'usr_01',
-  name: 'Dr. Rajesh Sharma',
-  email: 'rajesh.sharma@niti.gov.in',
-  organization: 'National Skill Development Directorate',
-  role: 'government',
-  department: 'Higher Education & Workforce Alignment',
+  name: 'Admin',
+  email: 'admin@zuno.gov.in',
+  organization: 'Zuno Platform Administration',
+  role: 'admin',
+  department: 'System & Platform Administration',
   region: 'National Capital Region',
 };
 

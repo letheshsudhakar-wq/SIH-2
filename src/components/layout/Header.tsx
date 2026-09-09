@@ -270,7 +270,7 @@ export const Header: React.FC = () => {
           onClick={() => setCurrentRoute('settings')}
           title="Account Settings"
         >
-          D
+          {userProfile.name ? userProfile.name.charAt(0).toUpperCase() : 'A'}
         </div>
       </div>
     </header>
