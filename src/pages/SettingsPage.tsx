@@ -1,23 +1,24 @@
 // ==========================================
-// PAGE 14: SETTINGS & API CONFIGURATION
+// PAGE 14: SETTINGS, SUPABASE & API CONFIGURATION
 // ==========================================
 
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { apiClient } from '../services/apiClient';
+import { supabaseManager } from '../services/supabaseClient';
 import { UserRole } from '../types';
 import { 
-  Settings, 
   Server, 
   Cpu, 
   User, 
-  Shield, 
   Key, 
   Save, 
   CheckCircle2, 
+  AlertCircle,
   Database,
-  Radio,
-  Lock
+  Lock,
+  ExternalLink,
+  Sparkles
 } from 'lucide-react';
 import { Badge } from '../components/common/Badge';
 
@@ -25,6 +26,10 @@ export const SettingsPage: React.FC = () => {
   const { userProfile, updateUserProfile, setUserRole, addToast } = useApp();
 
   const [apiConfig, setApiConfig] = useState(() => apiClient.getConfig());
+  const [supabaseConfig, setSupabaseConfig] = useState(() => supabaseManager.getConfig());
+  const [testingSupabase, setTestingSupabase] = useState(false);
+  const [supabaseStatus, setSupabaseStatus] = useState<{ success?: boolean; message?: string } | null>(null);
+
   const [profileForm, setProfileForm] = useState({
     name: userProfile.name,
     email: userProfile.email,
@@ -34,8 +39,44 @@ export const SettingsPage: React.FC = () => {
     role: userProfile.role,
   });
 
-  const [activeTab, setActiveTab] = useState<'api' | 'ai' | 'profile' | 'security'>('api');
+  const [activeTab, setActiveTab] = useState<'supabase' | 'api' | 'ai' | 'profile' | 'security'>('supabase');
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveSupabase = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    supabaseManager.updateConfig(supabaseConfig);
+    setTimeout(() => {
+      setIsSaving(false);
+      addToast({
+        type: 'success',
+        title: 'Supabase Settings Saved',
+        message: 'Supabase project credentials have been configured.',
+      });
+    }, 300);
+  };
+
+  const handleTestSupabase = async () => {
+    setTestingSupabase(true);
+    setSupabaseStatus(null);
+    supabaseManager.updateConfig(supabaseConfig);
+    const result = await supabaseManager.testConnection();
+    setTestingSupabase(false);
+    setSupabaseStatus(result);
+    if (result.success) {
+      addToast({
+        type: 'success',
+        title: 'Connection Successful',
+        message: result.message,
+      });
+    } else {
+      addToast({
+        type: 'error',
+        title: 'Connection Failed',
+        message: result.message,
+      });
+    }
+  };
 
   const handleSaveApi = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +89,7 @@ export const SettingsPage: React.FC = () => {
         title: 'Settings Saved',
         message: 'API & AI endpoint configurations have been updated.',
       });
-    }, 400);
+    }, 300);
   };
 
   const handleSaveProfile = (e: React.FormEvent) => {
@@ -75,7 +116,8 @@ export const SettingsPage: React.FC = () => {
         }}
       >
         {[
-          { id: 'api', label: 'API & Data Sources', icon: Server },
+          { id: 'supabase', label: 'Supabase Backend', icon: Database },
+          { id: 'api', label: 'REST API Endpoints', icon: Server },
           { id: 'ai', label: 'AI Model Config', icon: Cpu },
           { id: 'profile', label: 'Profile & Role', icon: User },
           { id: 'security', label: 'Security & Access', icon: Lock },
@@ -100,6 +142,7 @@ export const SettingsPage: React.FC = () => {
                 border: 'none',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
+                transition: 'all 0.15s ease',
               }}
             >
               <Icon size={16} color={isActive ? 'var(--zuno-primary-600)' : 'var(--text-muted)'} />
@@ -109,12 +152,126 @@ export const SettingsPage: React.FC = () => {
         })}
       </div>
 
-      {/* Tab 1: API & Data Sources Configuration */}
+      {/* Tab 0: Supabase Backend Configuration */}
+      {activeTab === 'supabase' && (
+        <form onSubmit={handleSaveSupabase} className="card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+            <div>
+              <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Database size={18} style={{ color: '#10b981' }} />
+                Supabase Backend &amp; Edge Functions
+              </h3>
+              <p className="card-subtitle">Connect your Supabase project for database storage, auth, and Gemini AI Edge Functions</p>
+            </div>
+            {supabaseConfig.url && supabaseConfig.anonKey ? (
+              <Badge variant="success" size="sm">Configured</Badge>
+            ) : (
+              <Badge variant="warning" size="sm">Setup Required</Badge>
+            )}
+          </div>
+
+          {/* Connection Test Status Alert */}
+          {supabaseStatus && (
+            <div
+              style={{
+                padding: '12px 16px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: supabaseStatus.success ? '#ecfdf5' : '#fef2f2',
+                border: `1px solid ${supabaseStatus.success ? '#a7f3d0' : '#fecaca'}`,
+                color: supabaseStatus.success ? '#065f46' : '#991b1b',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                fontSize: '0.85rem',
+                fontWeight: 600,
+              }}
+            >
+              {supabaseStatus.success ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+              <span>{supabaseStatus.message}</span>
+            </div>
+          )}
+
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Supabase Project URL (VITE_SUPABASE_URL)</label>
+            <input
+              type="url"
+              className="form-input"
+              value={supabaseConfig.url}
+              onChange={(e) => setSupabaseConfig({ ...supabaseConfig, url: e.target.value })}
+              placeholder="https://xyzprojectid.supabase.co"
+              required
+            />
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4 }}>
+              Found under your Supabase Dashboard &gt; <strong>Project Settings &gt; API &gt; Project URL</strong>
+            </span>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Supabase Anon / Public API Key (VITE_SUPABASE_ANON_KEY)</label>
+            <div style={{ position: 'relative' }}>
+              <Key size={16} style={{ position: 'absolute', left: 14, top: 12, color: 'var(--text-subtle)' }} />
+              <input
+                type="password"
+                className="form-input"
+                style={{ paddingLeft: 38 }}
+                value={supabaseConfig.anonKey}
+                onChange={(e) => setSupabaseConfig({ ...supabaseConfig, anonKey: e.target.value })}
+                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                required
+              />
+            </div>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4 }}>
+              The client-safe <code>anon</code> / <code>public</code> key for client queries and edge functions.
+            </span>
+          </div>
+
+          {/* Quick info box on Supabase Edge Function: gemini-ai */}
+          <div
+            style={{
+              backgroundColor: '#f0fdf4',
+              border: '1px solid #bbf7d0',
+              borderRadius: 'var(--radius-lg)',
+              padding: 'var(--space-4)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+            }}
+          >
+            <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#166534', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Sparkles size={14} />
+              Edge Functions Integration (gemini-ai)
+            </div>
+            <p style={{ fontSize: '0.8rem', color: '#14532d', margin: 0, lineHeight: 1.45 }}>
+              Once connected, AI operations (Curriculum Doctor analysis, skill taxonomy normalization, district training recommendations) automatically invoke the <code>gemini-ai</code> Supabase Edge Function!
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+            <button type="submit" className="btn btn-primary btn-md" disabled={isSaving}>
+              <Save size={15} />
+              {isSaving ? 'Saving...' : 'Save Supabase Credentials'}
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-secondary btn-md"
+              disabled={testingSupabase || !supabaseConfig.url || !supabaseConfig.anonKey}
+              onClick={handleTestSupabase}
+            >
+              <CheckCircle2 size={15} />
+              {testingSupabase ? 'Testing Connection...' : 'Test Supabase Connection'}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Tab 1: REST API & Data Sources Configuration */}
       {activeTab === 'api' && (
         <form onSubmit={handleSaveApi} className="card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
           <div>
-            <h3 className="card-title">Backend API &amp; Data Pipeline Configuration</h3>
-            <p className="card-subtitle">Connect Zuno to your production backend server or microservices cluster</p>
+            <h3 className="card-title">REST API &amp; Data Pipeline Configuration</h3>
+            <p className="card-subtitle">Connect Zuno to an optional local or cloud REST API server (FastAPI/Express)</p>
           </div>
 
           <div className="form-group" style={{ marginBottom: 0 }}>
@@ -128,7 +285,7 @@ export const SettingsPage: React.FC = () => {
               required
             />
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4 }}>
-              Used by all service endpoints (`marketService`, `curriculumService`, `crisisService`, etc.)
+              Used by service endpoints (`marketService`, `curriculumService`, `crisisService`, etc.)
             </span>
           </div>
 
@@ -171,7 +328,7 @@ export const SettingsPage: React.FC = () => {
           </div>
 
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Gemini / OpenAI API Key</label>
+            <label className="form-label">Direct Gemini / OpenAI API Key (Optional)</label>
             <div style={{ position: 'relative' }}>
               <Key size={16} style={{ position: 'absolute', left: 14, top: 12, color: 'var(--text-subtle)' }} />
               <input
@@ -255,34 +412,31 @@ export const SettingsPage: React.FC = () => {
 
           <button type="submit" className="btn btn-primary btn-md" style={{ width: 'fit-content' }}>
             <Save size={15} />
-            Update Profile
+            Save Profile
           </button>
         </form>
       )}
 
-      {/* Tab 4: Security */}
+      {/* Tab 4: Security & Access */}
       {activeTab === 'security' && (
         <div className="card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <div>
-            <h3 className="card-title">Security &amp; Data Privacy Safeguards</h3>
-            <p className="card-subtitle">Encrypted transport and telemetry compliance</p>
+            <h3 className="card-title">Security &amp; Data Governance</h3>
+            <p className="card-subtitle">Encrypted transport, zero data retention for student syllabi, and audit telemetry</p>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <div style={{ padding: '12px 14px', backgroundColor: 'var(--bg-surface-subtle)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>Strict Real-Data Integrity Policy</div>
-                <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>No synthetic or unverified statistics rendered on screens.</div>
-              </div>
-              <Badge variant="success">Enforced</Badge>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <CheckCircle2 size={16} color="var(--status-success)" />
+              <span>Client-side AES-GCM credential persistence</span>
             </div>
-
-            <div style={{ padding: '12px 14px', backgroundColor: 'var(--bg-surface-subtle)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>Encrypted Telemetry Headers</div>
-                <div style={{ fontSize: '0.785rem', color: 'var(--text-muted)' }}>All curriculum uploads parsed using zero-retention AI pipelines.</div>
-              </div>
-              <Badge variant="success">Active</Badge>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <CheckCircle2 size={16} color="var(--status-success)" />
+              <span>Supabase Row-Level Security (RLS) enabled</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <CheckCircle2 size={16} color="var(--status-success)" />
+              <span>Zero LLM training data retention policy</span>
             </div>
           </div>
         </div>
