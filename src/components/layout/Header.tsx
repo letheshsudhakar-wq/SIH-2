@@ -4,16 +4,11 @@
 
 import React from 'react';
 import { useApp, AppRoute } from '../../context/AppContext';
-import { Search, Bell, Landmark, Menu, Sun, ChevronDown } from 'lucide-react';
+import { Search, Bell, Landmark, Menu, ChevronDown } from 'lucide-react';
 import { ZunoLogo } from '../common/ZunoLogo';
 import { UserRole } from '../../types';
 
-const routeTitles: Record<AppRoute, { title: string; subtitle: string; icon?: React.ElementType }> = {
-  overview: {
-    title: 'Good morning, Dr. Rajesh Sharma',
-    subtitle: "Here's what's happening in the skill market and how Zuno is helping build a future-ready workforce.",
-    icon: Sun,
-  },
+const routeTitles: Partial<Record<AppRoute, { title: string; subtitle: string }>> = {
   'labour-market': {
     title: 'Labour Market Intelligence',
     subtitle: 'Real-time industry skill demand, hiring volume and employer velocity.',
@@ -79,10 +74,7 @@ export const Header: React.FC = () => {
     setCurrentRoute,
   } = useApp();
 
-  const currentInfo = routeTitles[currentRoute] || {
-    title: 'Zuno Platform',
-    subtitle: 'Labour Market & Curriculum Intelligence',
-  };
+  const currentInfo = routeTitles[currentRoute];
 
   const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setUserRole(e.target.value as UserRole);
@@ -119,33 +111,18 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Desktop Route Info Header */}
-      <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-        {currentRoute === 'overview' && (
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: '50%',
-              backgroundColor: '#f3f0ff',
-              color: '#7c3aed',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <Sun size={20} />
+      {/* Desktop Route Info Header (Rendered on other pages, hidden on overview) */}
+      <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', minWidth: 200 }}>
+        {currentInfo && (
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <h1 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em', margin: 0 }}>
+              {currentInfo.title}
+            </h1>
+            <p style={{ fontSize: '0.785rem', color: '#64748b', margin: '2px 0 0 0' }}>
+              {currentInfo.subtitle}
+            </p>
           </div>
         )}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <h1 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em', margin: 0 }}>
-            {currentInfo.title}
-          </h1>
-          <p style={{ fontSize: '0.785rem', color: '#64748b', margin: '2px 0 0 0' }}>
-            {currentInfo.subtitle}
-          </p>
-        </div>
       </div>
 
       {/* Center Search Bar */}
@@ -154,7 +131,7 @@ export const Header: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           position: 'relative',
-          maxWidth: 400,
+          maxWidth: 420,
           width: '100%',
           margin: '0 var(--space-4)',
         }}
