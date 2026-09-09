@@ -3,7 +3,7 @@
 // ==========================================
 
 import React, { useState, useRef } from 'react';
-import { UploadCloud, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
+import { UploadCloud, FileText, CheckCircle2, AlertCircle, Sparkles, BookOpen } from 'lucide-react';
 import { CurriculumFile } from '../../types';
 
 interface FileUploadCardProps {
@@ -71,23 +71,74 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
     }
   };
 
+  const handleLoadSample = (sampleCourse: string, sampleInst: string, sampleSemester: string) => {
+    const sampleBlob = new Blob([
+      `Course Syllabus: ${sampleCourse}\nInstitution: ${sampleInst}\nModules:\n1. Introduction & Monolithic RPC\n2. Database Schemas\n3. Web Services (SOAP / XML)\n4. Basic Linux Commands\n5. Final Theoretical Exam`
+    ], { type: 'text/plain' });
+    const sampleFile = new File([sampleBlob], `${sampleCourse.replace(/[^a-zA-Z0-9]/g, '_')}_Syllabus.txt`, { type: 'text/plain' });
+    
+    setSelectedFile(sampleFile);
+    setCourseTitle(sampleCourse);
+    setInstitution(sampleInst);
+    setSemester(sampleSemester);
+    setError(null);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedFile) {
-      setError('Please select a curriculum file to analyze.');
+      setError('Please select or upload a curriculum file to analyze.');
       return;
     }
     onFileSelected(selectedFile, { courseTitle, institution, semester });
   };
 
   return (
-    <div className="card" style={{ maxWidth: 720, margin: '0 auto' }}>
-      <div className="card-header">
+    <div className="card" style={{ maxWidth: 740, margin: '0 auto', padding: 'var(--space-6)' }}>
+      <div className="card-header" style={{ marginBottom: 'var(--space-4)' }}>
         <div>
-          <h3 className="card-title">Upload your curriculum</h3>
-          <p className="card-subtitle">Upload a course syllabus or curriculum document to begin AI alignment analysis.</p>
+          <h3 className="card-title" style={{ fontSize: '1.2rem', fontWeight: 800 }}>Upload Course Syllabus</h3>
+          <p className="card-subtitle">Upload your university syllabus document or select a sample course to test AI alignment</p>
         </div>
-        <span className="badge badge-purple">Step 1 of 4</span>
+        <span className="badge badge-purple">Step 1 of 5</span>
+      </div>
+
+      {/* Quick 1-Click Preset Samples */}
+      <div style={{ marginBottom: 'var(--space-4)' }}>
+        <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#64748b', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Sparkles size={13} color="#7c3aed" />
+          <span>Or test instantly with standard university syllabi:</span>
+        </div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {[
+            { title: 'B.Tech CS – Cloud & Distributed Systems', inst: 'National Institute of Technology', sem: 'Year 3 / Semester 5' },
+            { title: 'B.Tech AI & Machine Learning Engineering', inst: 'State Technological University', sem: 'Year 3 / Semester 6' },
+            { title: 'B.E. Embedded Systems & Industrial IoT', inst: 'Regional Engineering College', sem: 'Year 4 / Semester 7' },
+          ].map((sample, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => handleLoadSample(sample.title, sample.inst, sample.sem)}
+              style={{
+                padding: '6px 12px',
+                borderRadius: 'var(--radius-full)',
+                backgroundColor: courseTitle === sample.title ? '#ede9fe' : '#f8fafc',
+                border: `1px solid ${courseTitle === sample.title ? '#a78bfa' : '#e2e8f0'}`,
+                color: courseTitle === sample.title ? '#6d28d9' : '#475569',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <BookOpen size={12} />
+              {sample.title}
+            </button>
+          ))}
+        </div>
       </div>
 
       <form onSubmit={handleSubmit}>
@@ -99,22 +150,22 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
           style={{
-            border: `2px dashed ${dragOver ? 'var(--zuno-primary-500)' : selectedFile ? 'var(--status-success)' : 'var(--border-strong)'}`,
+            border: `2px dashed ${dragOver ? '#7c3aed' : selectedFile ? '#10b981' : '#cbd5e1'}`,
             borderRadius: 'var(--radius-lg)',
-            padding: 'var(--space-8) var(--space-6)',
+            backgroundColor: dragOver ? '#f5f3ff' : selectedFile ? '#f0fdf4' : '#f8fafc',
+            padding: '32px 24px',
             textAlign: 'center',
-            backgroundColor: dragOver ? 'var(--zuno-primary-50)' : selectedFile ? 'var(--status-success-bg)' : 'var(--bg-surface-subtle)',
             cursor: 'pointer',
-            transition: 'all var(--transition-fast)',
             marginBottom: 'var(--space-5)',
+            transition: 'all var(--transition-fast)',
           }}
         >
           <input
             ref={inputRef}
             type="file"
             accept=".pdf,.doc,.docx,.txt"
-            style={{ display: 'none' }}
             onChange={handleFileInput}
+            style={{ display: 'none' }}
           />
 
           {selectedFile ? (
@@ -124,33 +175,58 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
                   width: 48,
                   height: 48,
                   borderRadius: '50%',
-                  backgroundColor: '#ffffff',
-                  color: 'var(--status-success)',
+                  backgroundColor: '#dcfce7',
+                  color: '#16a34a',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: 'var(--shadow-sm)',
                 }}
               >
-                <CheckCircle2 size={24} />
+                <CheckCircle2 size={26} />
               </div>
-              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
-                {selectedFile.name}
+              <div>
+                <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '0.95rem' }}>
+                  {selectedFile.name}
+                </div>
+                <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                  {(selectedFile.size / 1024).toFixed(1)} KB • Ready for AI telemetry analysis
+                </div>
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                {(selectedFile.size / 1024).toFixed(1)} KB • Click or drag another file to replace
-              </div>
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedFile(null);
+                }}
+                style={{ fontSize: '0.75rem', color: '#dc2626', marginTop: 4 }}
+              >
+                Remove / Change file
+              </button>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-              <div className="empty-icon-wrap" style={{ margin: '0 auto 8px' }}>
+              <div
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: '50%',
+                  backgroundColor: '#ede9fe',
+                  color: '#7c3aed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <UploadCloud size={24} />
               </div>
-              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
-                Drag and drop your syllabus here, or <span style={{ color: 'var(--zuno-primary-600)' }}>browse</span>
-              </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                Supports PDF, DOC, DOCX and TXT (up to 25MB)
+              <div>
+                <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '0.95rem', marginBottom: 2 }}>
+                  Click to upload or drag &amp; drop
+                </div>
+                <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                  PDF, DOCX, DOC, or TXT (Max 25MB)
+                </div>
               </div>
             </div>
           )}
@@ -164,10 +240,11 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
               gap: 8,
               padding: '10px 14px',
               borderRadius: 'var(--radius-md)',
-              backgroundColor: 'var(--status-critical-bg)',
-              color: 'var(--status-critical)',
+              backgroundColor: '#fef2f2',
+              color: '#dc2626',
               fontSize: '0.85rem',
               marginBottom: 'var(--space-4)',
+              border: '1px solid #fecaca',
             }}
           >
             <AlertCircle size={16} />
@@ -184,7 +261,7 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
               className="form-input"
               value={courseTitle}
               onChange={(e) => setCourseTitle(e.target.value)}
-              placeholder="e.g. Data Structures & Cloud Architecture"
+              placeholder="e.g. Cloud & Distributed Computing"
               required
             />
           </div>
@@ -222,9 +299,9 @@ export const FileUploadCard: React.FC<FileUploadCardProps> = ({
             type="submit"
             className="btn btn-primary btn-lg"
             disabled={!selectedFile || isProcessing}
-            style={{ width: '100%' }}
+            style={{ width: '100%', borderRadius: 'var(--radius-md)', padding: '12px' }}
           >
-            {isProcessing ? 'Initializing AI Pipeline...' : 'Start AI Curriculum Analysis'}
+            {isProcessing ? 'Initializing AI Pipeline...' : 'Start AI Curriculum Analysis →'}
           </button>
         </div>
       </form>

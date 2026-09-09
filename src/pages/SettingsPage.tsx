@@ -1,11 +1,12 @@
 // ==========================================
-// PAGE 14: SETTINGS, SUPABASE & API CONFIGURATION
+// PAGE 14: SETTINGS, SUPABASE & AI CONFIGURATION
 // ==========================================
 
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { apiClient } from '../services/apiClient';
 import { supabaseManager } from '../services/supabaseClient';
+import { geminiService } from '../services/geminiService';
 import { UserRole } from '../types';
 import { 
   Server, 
@@ -18,7 +19,8 @@ import {
   Database,
   Lock,
   ExternalLink,
-  Sparkles
+  Sparkles,
+  Bot
 } from 'lucide-react';
 import { Badge } from '../components/common/Badge';
 
@@ -30,6 +32,12 @@ export const SettingsPage: React.FC = () => {
   const [testingSupabase, setTestingSupabase] = useState(false);
   const [supabaseStatus, setSupabaseStatus] = useState<{ success?: boolean; message?: string } | null>(null);
 
+  const [geminiApiKey, setGeminiApiKey] = useState(() => {
+    return localStorage.getItem('zuno_gemini_api_key') || apiConfig.geminiApiKey || '';
+  });
+  const [testingGemini, setTestingGemini] = useState(false);
+  const [geminiStatus, setGeminiStatus] = useState<{ success?: boolean; message?: string } | null>(null);
+
   const [profileForm, setProfileForm] = useState({
     name: userProfile.name,
     email: userProfile.email,
@@ -39,8 +47,55 @@ export const SettingsPage: React.FC = () => {
     role: userProfile.role,
   });
 
-  const [activeTab, setActiveTab] = useState<'supabase' | 'api' | 'ai' | 'profile' | 'security'>('supabase');
+  const [activeTab, setActiveTab] = useState<'ai' | 'supabase' | 'api' | 'profile' | 'security'>('ai');
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveGemini = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    geminiService.setApiKey(geminiApiKey);
+    apiClient.updateConfig({ geminiApiKey });
+    setTimeout(() => {
+      setIsSaving(false);
+      addToast({
+        type: 'success',
+        title: 'Gemini AI Configured',
+        message: 'Google Gemini API key has been saved and is active across all AI modules.',
+      });
+    }, 300);
+  };
+
+  const handleTestGemini = async () => {
+    setTestingGemini(true);
+    setGeminiStatus(null);
+    geminiService.setApiKey(geminiApiKey);
+    try {
+      const response = await geminiService.generateContent(
+        'Respond with: "Zuno AI is active and ready to modernize curricula!" in 1 sentence.'
+      );
+      setTestingGemini(false);
+      setGeminiStatus({
+        success: true,
+        message: `Live Gemini Response: "${response.trim()}"`,
+      });
+      addToast({
+        type: 'success',
+        title: 'Gemini AI Connected!',
+        message: 'Successfully tested live Google Gemini API.',
+      });
+    } catch (err: any) {
+      setTestingGemini(false);
+      setGeminiStatus({
+        success: false,
+        message: err?.message || 'Failed to connect to Google Gemini API.',
+      });
+      addToast({
+        type: 'error',
+        title: 'Gemini Test Failed',
+        message: err?.message || 'Check your API key.',
+      });
+    }
+  };
 
   const handleSaveSupabase = (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,9 +171,9 @@ export const SettingsPage: React.FC = () => {
         }}
       >
         {[
+          { id: 'ai', label: 'Google Gemini AI', icon: Sparkles },
           { id: 'supabase', label: 'Supabase Backend', icon: Database },
           { id: 'api', label: 'REST API Endpoints', icon: Server },
-          { id: 'ai', label: 'AI Model Config', icon: Cpu },
           { id: 'profile', label: 'Profile & Role', icon: User },
           { id: 'security', label: 'Security & Access', icon: Lock },
         ].map((tab) => {
@@ -152,7 +207,131 @@ export const SettingsPage: React.FC = () => {
         })}
       </div>
 
-      {/* Tab 0: Supabase Backend Configuration */}
+      {/* Tab 1: Google Gemini AI Configuration */}
+      {activeTab === 'ai' && (
+        <form onSubmit={handleSaveGemini} className="card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+            <div>
+              <h3 className="card-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Bot size={18} style={{ color: '#7c3aed' }} />
+                Google Gemini AI Model Engine
+              </h3>
+              <p className="card-subtitle">Powers live Curriculum Doctor syllabus analysis, skill gap extraction, and modernization proposals</p>
+            </div>
+            {geminiApiKey ? (
+              <Badge variant="purple" size="sm">Gemini Active</Badge>
+            ) : (
+              <Badge variant="neutral" size="sm">Awaiting Key</Badge>
+            )}
+          </div>
+
+          {/* Connection Test Status Alert */}
+          {geminiStatus && (
+            <div
+              style={{
+                padding: '12px 16px',
+                borderRadius: 'var(--radius-md)',
+                backgroundColor: geminiStatus.success ? '#ecfdf5' : '#fef2f2',
+                border: `1px solid ${geminiStatus.success ? '#a7f3d0' : '#fecaca'}`,
+                color: geminiStatus.success ? '#065f46' : '#991b1b',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                fontSize: '0.85rem',
+                fontWeight: 600,
+              }}
+            >
+              {geminiStatus.success ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
+              <span>{geminiStatus.message}</span>
+            </div>
+          )}
+
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Google Gemini API Key (VITE_GEMINI_API_KEY)</label>
+            <div style={{ position: 'relative' }}>
+              <Key size={16} style={{ position: 'absolute', left: 14, top: 12, color: 'var(--text-subtle)' }} />
+              <input
+                type="password"
+                className="form-input"
+                style={{ paddingLeft: 38 }}
+                value={geminiApiKey}
+                onChange={(e) => setGeminiApiKey(e.target.value)}
+                placeholder="AIzaSy..."
+                required
+              />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 6, flexWrap: 'wrap', gap: 6 }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                Get your free API key instantly from Google AI Studio.
+              </span>
+              <a
+                href="https://aistudio.google.com/app/apikey"
+                target="_blank"
+                rel="noreferrer"
+                style={{ fontSize: '0.75rem', fontWeight: 700, color: '#7c3aed', display: 'flex', alignItems: 'center', gap: 4 }}
+              >
+                Get Free Gemini Key <ExternalLink size={12} />
+              </a>
+            </div>
+          </div>
+
+          {/* AI Features Checklist */}
+          <div
+            style={{
+              backgroundColor: '#f5f3ff',
+              border: '1px solid #ddd6fe',
+              borderRadius: 'var(--radius-lg)',
+              padding: 'var(--space-4)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+            }}
+          >
+            <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#6d28d9', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Sparkles size={14} />
+              Enabled AI Capabilities:
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 8, fontSize: '0.8rem', color: '#4338ca' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <CheckCircle2 size={14} color="#10b981" />
+                <span>Curriculum Doctor Gap Analysis</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <CheckCircle2 size={14} color="#10b981" />
+                <span>Automatic Syllabus Diff Generation</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <CheckCircle2 size={14} color="#10b981" />
+                <span>Student Skill Gap Personalized Roadmap</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <CheckCircle2 size={14} color="#10b981" />
+                <span>District Training Plan Recommendations</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+            <button type="submit" className="btn btn-primary btn-md" disabled={isSaving}>
+              <Save size={15} />
+              {isSaving ? 'Saving...' : 'Save Gemini Key'}
+            </button>
+
+            <button
+              type="button"
+              className="btn btn-secondary btn-md"
+              disabled={testingGemini || !geminiApiKey}
+              onClick={handleTestGemini}
+            >
+              <Sparkles size={15} />
+              {testingGemini ? 'Testing Gemini AI...' : 'Test Gemini AI Handshake'}
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* Tab 2: Supabase Backend Configuration */}
       {activeTab === 'supabase' && (
         <form onSubmit={handleSaveSupabase} className="card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
@@ -266,7 +445,7 @@ export const SettingsPage: React.FC = () => {
         </form>
       )}
 
-      {/* Tab 1: REST API & Data Sources Configuration */}
+      {/* Tab 3: REST API & Data Sources Configuration */}
       {activeTab === 'api' && (
         <form onSubmit={handleSaveApi} className="card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
           <div>
@@ -319,40 +498,7 @@ export const SettingsPage: React.FC = () => {
         </form>
       )}
 
-      {/* Tab 2: AI Model Configuration */}
-      {activeTab === 'ai' && (
-        <form onSubmit={handleSaveApi} className="card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
-          <div>
-            <h3 className="card-title">AI Engine &amp; Large Language Model Keys</h3>
-            <p className="card-subtitle">Configure model providers for Curriculum Doctor analysis &amp; skill taxonomy parsing</p>
-          </div>
-
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Direct Gemini / OpenAI API Key (Optional)</label>
-            <div style={{ position: 'relative' }}>
-              <Key size={16} style={{ position: 'absolute', left: 14, top: 12, color: 'var(--text-subtle)' }} />
-              <input
-                type="password"
-                className="form-input"
-                style={{ paddingLeft: 38 }}
-                value={apiConfig.geminiApiKey || ''}
-                onChange={(e) => setApiConfig({ ...apiConfig, geminiApiKey: e.target.value })}
-                placeholder="AIzaSy... or sk-..."
-              />
-            </div>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 4 }}>
-              Key is securely stored in local session storage and transmitted via encrypted headers.
-            </span>
-          </div>
-
-          <button type="submit" className="btn btn-primary btn-md" disabled={isSaving} style={{ width: 'fit-content' }}>
-            <Save size={15} />
-            Save AI Settings
-          </button>
-        </form>
-      )}
-
-      {/* Tab 3: Profile & Role Switcher */}
+      {/* Tab 4: Profile & Role Switcher */}
       {activeTab === 'profile' && (
         <form onSubmit={handleSaveProfile} className="card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
           <div>
@@ -401,11 +547,11 @@ export const SettingsPage: React.FC = () => {
                 value={profileForm.role}
                 onChange={(e) => setProfileForm({ ...profileForm, role: e.target.value as UserRole })}
               >
+                <option value="admin">Platform Administrator</option>
                 <option value="government">Government / Policy Maker</option>
                 <option value="institution">Institution / College Dean</option>
                 <option value="employer">Employer / Corporate Recruiter</option>
                 <option value="student">Student / Candidate</option>
-                <option value="admin">Platform Administrator</option>
               </select>
             </div>
           </div>
@@ -417,7 +563,7 @@ export const SettingsPage: React.FC = () => {
         </form>
       )}
 
-      {/* Tab 4: Security & Access */}
+      {/* Tab 5: Security & Access */}
       {activeTab === 'security' && (
         <div className="card" style={{ padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <div>

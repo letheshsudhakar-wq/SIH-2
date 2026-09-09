@@ -1,8 +1,9 @@
 // ==========================================
-// CURRICULUM DOCTOR SERVICE
+// CURRICULUM DOCTOR SERVICE (Powered by Gemini AI)
 // ==========================================
 
 import { apiClient } from './apiClient';
+import { geminiService } from './geminiService';
 import { 
   CurriculumAnalysisResult, 
   CurriculumFile, 
@@ -25,7 +26,7 @@ export const curriculumService = {
         body: formData,
       });
     } catch {
-      // Local fallback representation of uploaded file metadata
+      // Local representation of uploaded file metadata
       return {
         name: file.name,
         size: file.size,
@@ -37,31 +38,54 @@ export const curriculumService = {
   },
 
   /**
-   * Triggers deep AI Curriculum Analysis
+   * Triggers deep AI Curriculum Analysis using Gemini
    */
-  async analyzeCurriculum(file: CurriculumFile): Promise<CurriculumAnalysisResult | null> {
+  async analyzeCurriculum(file: CurriculumFile): Promise<CurriculumAnalysisResult> {
+    // 1. Try backend API if available
     try {
-      return await apiClient.post<CurriculumAnalysisResult>('/curriculum/analyze', {
+      const apiRes = await apiClient.post<CurriculumAnalysisResult>('/curriculum/analyze', {
         filename: file.name,
         courseTitle: file.courseTitle,
+        institution: file.institutionName,
       });
+      if (apiRes) return apiRes;
     } catch {
-      // When backend is not connected, returns null to show the proper unconnected/needs-setup state
-      return null;
+      // Fallback to direct Gemini AI
     }
+
+    // 2. Direct Gemini AI Engine (Edge / Client LLM)
+    return await geminiService.analyzeCurriculum(
+      file.courseTitle || file.name.replace(/\.[^/.]+$/, ''),
+      file.institutionName || 'University Faculty of Engineering'
+    );
   },
 
   /**
-   * Requests actionable curriculum improvement proposals
+   * Requests actionable curriculum improvement proposals (Before/After modern diffs)
    */
-  async generateImprovedCurriculum(analysisId: string): Promise<ImprovedModuleDiff[] | null> {
+  async generateImprovedCurriculum(
+    courseTitle: string,
+    missingSkills: string[] = [],
+    outdatedTopics: string[] = []
+  ): Promise<ImprovedModuleDiff[]> {
+    // 1. Try backend API if available
     try {
-      return await apiClient.post<ImprovedModuleDiff[]>('/curriculum/improve', {
-        analysisId,
+      const apiRes = await apiClient.post<ImprovedModuleDiff[]>('/curriculum/improve', {
+        courseTitle,
+        missingSkills,
+        outdatedTopics,
       });
+      if (apiRes && Array.isArray(apiRes) && apiRes.length > 0) return apiRes;
     } catch {
-      return null;
+      // Fallback to direct Gemini
     }
+
+    // 2. Direct Gemini AI
+    return await geminiService.generateModernizedCurriculum(
+      courseTitle,
+      missingSkills,
+      outdatedTopics
+    );
   },
 
   /**
