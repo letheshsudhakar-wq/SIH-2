@@ -25,16 +25,15 @@ Educational institutions frequently teach outdated syllabus modules, leaving gra
    - Alignment scoring & breakdown (Aligned, Missing, Outdated topics)
    - Prescriptive recommendations categorized by priority
    - **"Improve My Curriculum"** side-by-side modular modernization diff generator.
-5. **Zuno Forecast (`/forecast`)**: Forward-looking technology signals and skill demand forecasting across 6M, 12M, 18M, and 24M horizons.
-6. **Skill Crisis Radar (`/crisis`)**: Interactive national vector map of India with state and district shortage severity tracking (Low, Medium, High, Critical) and policy recommendations.
-7. **Skill DNA (`/dna`)**: Role capability blueprints mapping core competencies, supporting tools, foundational knowledge, and importance weights.
-8. **Future Jobs Map (`/future-jobs`)**: Geographic economic clusters mapping tech hub expansion, industrial readiness, and policy directives.
-9. **Employer Pulse (`/employer`)**: Direct industry intake form capturing real-time skill shortages, hiring bottlenecks, and candidate readiness feedback.
-10. **Student Skill Gap (`/student`)**: Diagnostic self-assessment evaluating candidate competencies against target industry role baselines.
-11. **Government Dashboard (`/government`)**: Macro workforce development oversight, institutional allocation, and budget recommendations.
-12. **District Training Plan (`/district-plan`)**: Actionable capacity workbench generating training program specs, lab equipment checklists, and trainer upskilling plans.
-13. **Intelligence Reports (`/reports`)**: Template-based document generator, print/PDF export, and executive briefing engine.
-14. **System & API Settings (`/settings`)**: Endpoint management (`VITE_API_BASE_URL`), LLM key configuration (Gemini/OpenAI), and multi-role switcher.
+5. **Skill Crisis Radar (`/crisis`)**: Interactive national vector map of India with state and district shortage severity tracking (Low, Medium, High, Critical) and policy recommendations.
+6. **Skill DNA (`/dna`)**: Role capability blueprints mapping core competencies, supporting tools, foundational knowledge, and importance weights.
+7. **Future Jobs Map (`/future-jobs`)**: Geographic economic clusters mapping tech hub expansion, industrial readiness, and policy directives.
+8. **Employer Pulse (`/employer`)**: Direct industry intake form capturing real-time skill shortages, hiring bottlenecks, and candidate readiness feedback.
+9. **Student Skill Gap (`/student`)**: Diagnostic self-assessment evaluating candidate competencies against target industry role baselines.
+10. **Government Dashboard (`/government`)**: Macro workforce development oversight, institutional allocation, and budget recommendations.
+11. **District Training Plan (`/district-plan`)**: Actionable capacity workbench generating training program specs, lab equipment checklists, and trainer upskilling plans.
+12. **Intelligence Reports (`/reports`)**: Template-based document generator, print/PDF export, and executive briefing engine.
+13. **System & API Settings (`/settings`)**: Endpoint management (`VITE_API_BASE_URL`), LLM key configuration (Gemini/OpenAI), and multi-role switcher.
 
 ---
 
@@ -42,7 +41,7 @@ Educational institutions frequently teach outdated syllabus modules, leaving gra
 
 Zuno strictly adheres to a **zero-fabrication policy**:
 - In the absence of live backend telemetry, the UI presents elegant, informative **empty states**, **skeleton shimmer loaders**, and explicit connection prompts rather than inventing fake sample statistics or misleading numbers.
-- The frontend includes a modular, production-ready service layer (`marketService`, `curriculumService`, `forecastService`, `crisisService`, `skillService`, `employerService`, `governmentService`, `reportService`, `aiService`) ready for instant REST / GraphQL / AI microservice connection.
+- The frontend includes a modular, production-ready service layer (`marketService`, `curriculumService`, `crisisService`, `skillService`, `employerService`, `governmentService`, `reportService`, `aiService`) ready for instant REST / GraphQL / AI microservice connection.
 
 ---
 

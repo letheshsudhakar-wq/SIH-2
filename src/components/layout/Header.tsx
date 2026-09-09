@@ -25,10 +25,6 @@ const routeTitles: Record<AppRoute, { title: string; subtitle: string }> = {
     title: 'Curriculum Doctor',
     subtitle: 'Align higher education syllabi directly with live industry demand.',
   },
-  forecast: {
-    title: 'Zuno Forecast',
-    subtitle: 'Forward-looking predictive signals shaping the future of work.',
-  },
   crisis: {
     title: 'Skill Crisis Radar',
     subtitle: 'Regional talent shortages, supply-demand imbalances and policy intervention.',

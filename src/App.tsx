@@ -14,7 +14,6 @@ import { OverviewPage } from './pages/OverviewPage';
 import { LabourMarketPage } from './pages/LabourMarketPage';
 import { SkillIntelligencePage } from './pages/SkillIntelligencePage';
 import { CurriculumDoctorPage } from './pages/CurriculumDoctorPage';
-import { ZunoForecastPage } from './pages/ZunoForecastPage';
 import { SkillCrisisRadarPage } from './pages/SkillCrisisRadarPage';
 import { SkillDnaPage } from './pages/SkillDnaPage';
 import { FutureJobsMapPage } from './pages/FutureJobsMapPage';
@@ -38,8 +37,6 @@ export const App: React.FC = () => {
         return <SkillIntelligencePage />;
       case 'curriculum':
         return <CurriculumDoctorPage />;
-      case 'forecast':
-        return <ZunoForecastPage />;
       case 'crisis':
         return <SkillCrisisRadarPage />;
       case 'dna':

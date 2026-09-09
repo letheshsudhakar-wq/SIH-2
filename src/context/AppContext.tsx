@@ -10,7 +10,6 @@ export type AppRoute =
   | 'labour-market'
   | 'skills'
   | 'curriculum'
-  | 'forecast'
   | 'crisis'
   | 'dna'
   | 'future-jobs'

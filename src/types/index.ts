@@ -174,42 +174,7 @@ export interface CurriculumAnalysisResult {
 }
 
 // ------------------------------------------
-// 4. ZUNO FORECAST
-// ------------------------------------------
-
-export type ForecastHorizon = '6M' | '12M' | '18M' | '24M';
-
-export interface ForecastItem {
-  id: string;
-  skillName: string;
-  category: SkillCategory;
-  confidenceScore?: number;
-  expectedAdoptionTier: 'Mass Market' | 'Early Adopter' | 'Niche Specialist' | 'Transformative';
-  growthVelocity?: number;
-  keyDrivers: string[];
-  impactedRoles: string[];
-  actionRecommendation: string;
-}
-
-export interface TechnologySignal {
-  technology: string;
-  maturity: 'Emerging' | 'Accelerating' | 'Mainstream' | 'Fading';
-  hiringImpact: 'High' | 'Medium' | 'Low';
-  associatedSkills: string[];
-  timeToPeakDemand: string;
-}
-
-export interface ForecastData {
-  horizon: ForecastHorizon;
-  topRisingSkills: ForecastItem[];
-  emergingTechnologies: TechnologySignal[];
-  industryGrowthSignals: { industry: string; trend: 'Rapid Expansion' | 'Moderate' | 'Slow'; demandIndex?: number }[];
-  futureRoleDemand: { role: string; projectedDemandIndex?: number; keyShift: string }[];
-  zunoInsightSummary?: string;
-}
-
-// ------------------------------------------
-// 5. SKILL CRISIS RADAR & INDIA MAP
+// 4. SKILL CRISIS RADAR & INDIA MAP
 // ------------------------------------------
 
 export type ShortageSeverity = 'Low' | 'Medium' | 'High' | 'Critical';

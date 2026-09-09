@@ -7,18 +7,14 @@ import { useApp } from '../context/AppContext';
 import { marketService } from '../services/marketService';
 import { skillService } from '../services/skillService';
 import { 
-  Briefcase, 
-  Sparkles, 
-  Flame, 
-  AlertOctagon, 
-  ArrowRight, 
-  Stethoscope, 
   TrendingUp, 
-  Compass, 
-  FileText,
-  Search,
-  ExternalLink,
-  ChevronRight
+  Sparkles, 
+  Stethoscope, 
+  AlertOctagon, 
+  FileText, 
+  Briefcase, 
+  Flame, 
+  ArrowRight
 } from 'lucide-react';
 import { MetricCard } from '../components/common/MetricCard';
 import { MinimalChart } from '../components/charts/MinimalChart';
@@ -65,14 +61,6 @@ export const OverviewPage: React.FC = () => {
       route: 'labour-market' as const,
       color: '#0ea5e9',
       bg: '#f0f9ff',
-    },
-    {
-      title: 'View Zuno Forecast',
-      desc: 'Predictive signals for emerging technologies across 6-24 months.',
-      icon: Compass,
-      route: 'forecast' as const,
-      color: '#8b5cf6',
-      bg: '#f5f3ff',
     },
     {
       title: 'Check Skill Crisis',
@@ -184,10 +172,10 @@ export const OverviewPage: React.FC = () => {
             value={emergingSkills ? `${emergingSkills.length} High-Growth` : null}
             icon={Flame}
             loading={loading}
-            emptyMessage="Awaiting forecast data"
+            emptyMessage="Awaiting capability data"
             subtitle="Rapidly accelerating toolsets"
-            onAction={() => setCurrentRoute('forecast')}
-            actionLabel="Forecast"
+            onAction={() => setCurrentRoute('skills')}
+            actionLabel="Skills"
           />
 
           <MetricCard

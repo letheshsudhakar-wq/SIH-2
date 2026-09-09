@@ -10,7 +10,6 @@ import {
   TrendingUp, 
   Sparkles, 
   Stethoscope, 
-  Compass, 
   AlertOctagon, 
   Dna, 
   Map, 
@@ -39,7 +38,6 @@ const navItems: NavItem[] = [
   { id: 'skills', label: 'Skill Intelligence', icon: Sparkles },
   
   { section: 'CURRICULUM & AI', id: 'curriculum', label: 'Curriculum Doctor', icon: Stethoscope, badge: 'AI' },
-  { id: 'forecast', label: 'Zuno Forecast', icon: Compass },
   { id: 'crisis', label: 'Skill Crisis Radar', icon: AlertOctagon, badge: 'India' },
   { id: 'dna', label: 'Skill DNA', icon: Dna },
   { id: 'future-jobs', label: 'Future Jobs Map', icon: Map },
